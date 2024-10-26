@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: left;
+            margin: 10px;
+        }
+        .title, .time, .menu-item, .filter-item {
+            font-weight: bold; /* In đậm chữ */
+        }
+        .title {
+            font-size: 24px;
+        }
+        .time {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        .toolbar {
+            background-color: #f0f0f0;
+            padding: 10px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin: 0 10px;
+        }
+        .menu {
+            display: flex;
+            gap: 15px;
+        }
+        .filters {
+            display: flex;
+            justify-content: flex-start;
+            margin: 10px;
+            align-items: flex-end; /* Căn chỉnh theo chiều dọc */
+        }
+        .filter-item {
+            margin-right: 15px;
+        }
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px;
+        }
+        .search-box {
+            padding: 5px;
+            margin-left: auto; /* Đẩy thanh tìm kiếm sang bên phải */
+            width: 200px; /* Chiều rộng của thanh tìm kiếm */
+            border: 1px solid #ccc; /* Biên cho thanh tìm kiếm */
+        }
+        .scrollable {
+            display: flex;
+            overflow-x: auto; /* Cuộn theo chiều ngang */
+            white-space: nowrap; /* Ngăn không cho các khung xuống dòng */
+            margin: 10px; /* Khoảng cách cho khung cuộn */
+            padding: 5px;
+        }
+        .button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            background-color: white; /* Nền trắng */
+            color: black; /* Chữ đen */
+            border: 1px solid #ccc; /* Biên cho nút */
+            border-radius: 5px; /* Góc bo tròn */
+            cursor: pointer; /* Biểu thị rằng có thể nhấn */
+            white-space: nowrap; /* Ngăn không cho chữ xuống dòng */
+        }
+        .button:hover {
+            background-color: #f0f0f0; /* Màu nền khi hover */
+        }
+        .search-icon {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        .reset {
+            margin-left: 10px; /* Khoảng cách cho chữ Reset */
+            cursor: pointer; /* Biểu thị rằng có thể nhấn */
+            color: #007bff; /* Màu chữ cho Reset */
+            text-decoration: underline; /* Gạch chân để thể hiện là liên kết */
+            display: inline; /* Đảm bảo nó không có khung */
+        }
+        .course-container {
+            display: flex;
+            flex-wrap: wrap; /* Để các khóa học xuống dòng nếu không đủ chỗ */
+            margin: 10px;
+        }
+        .course-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px;
+            width: 240px; /* Chiều rộng cho mỗi khóa học */
+            text-align: center; /* Căn giữa nội dung */
+            background-color: white; /* Nền trắng cho khung khóa học */
+            position: relative; /* Để căn chỉnh thông báo bên phải */
+            min-height: 220px; /* Chiều cao tối thiểu để đủ chỗ cho các thành phần */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
+        }
+        .course-card:hover {
+            transform: translateY(-5px); /* Nâng lên 5px khi hover */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Thêm bóng */
+        }
+        .course-image {
+            width: 100%; /* Chiều rộng hình ảnh */
+            height: auto; /* Giữ tỷ lệ hình ảnh */
+            aspect-ratio: 16 / 9; /* Tỷ lệ 16:9 */
+            border-radius: 5px;
+            object-fit: cover; /* Đảm bảo hình ảnh lấp đầy khung */
+        }
+        .progress {
+            display: flex;
+            justify-content: space-between; /* Căn đều giữa tiến độ và đánh giá */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .star {
+            cursor: pointer; /* Biểu thị rằng có thể nhấn */
+            color: gray; /* Màu sao rỗng */
+        }
+        .star.filled {
+            color: gold; /* Màu sao vàng khi được đánh giá */
+        }
+        .rating-message {
+            margin-top: 10px; /* Khoảng cách cho thông báo đánh giá */
+            font-style: italic; /* Chữ nghiêng cho thông báo */
+            position: absolute; /* Để căn chỉnh bên phải */
+            right: 10px; /* Cách bên phải khung */
+            bottom: 10px; /* Cách dưới khung để nằm dưới tiến độ */
+            text-align: right; /* Căn phải */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="title">My Learning</div>
+        <div class="time" id="timeSpent">Thời gian xem: 0 phút</div>
+    </div>
+
+    <div class="toolbar">
+        <div class="menu">
+            <button class="button">All courses</button>
+            <button class="button">Learning paths</button>
+            <button class="button">Certification</button>
+            <button class="button">Archived</button>
+            <button class="button">Learning tools</button>
+        </div>
+    </div>
+
+    <div class="filters">
+        <div class="filter-item">Sort by</div>
+        <div class="filter-item">Filter by</div>
+    </div>
+
+    <div class="search-container">
+        <div class="scrollable">
+            <button class="button">Recently accessed</button>
+            <button class="button">Categories</button>
+            <button class="button">Progress</button>
+            <button class="button">Instructor</button>
+        </div>
+        <div class="reset">Reset</div> <!-- Có thể nhấn -->
+        <input type="text" class="search-box" placeholder="Search...">
+        <span class="search-icon">🔍</span> <!-- Biểu tượng kính lúp -->
+    </div>
+
+    <div class="course-container">
+        <div class="course-card">
+            <img src="https://via.placeholder.com/240x135" alt="Course Image" class="course-image">
+            <div>Mô tả khóa học 1</div>
+            <div class="progress">
+                <span>Tiến độ: 70%</span>
+                <div>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                </div>
+            </div>
+            <div class="rating-message" id="ratingMessage1">Leave a rating</div>
+        </div>
+        <div class="course-card">
+            <img src="https://via.placeholder.com/240x135" alt="Course Image" class="course-image">
+            <div>Mô tả khóa học 2</div>
+            <div class="progress">
+                <span>Tiến độ: 50%</span>
+                <div>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                </div>
+            </div>
+            <div class="rating-message" id="ratingMessage2">Leave a rating</div>
+        </div>
+        <div class="course-card">
+            <img src="https://via.placeholder.com/240x135" alt="Course Image" class="course-image">
+            <div>Mô tả khóa học 3</div>
+            <div class="progress">
+                <span>Tiến độ: 30%</span>
+                <div>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                    <span class="star" data-rating="0">★</span>
+                </div>
+            </div>
+            <div class="rating-message" id="ratingMessage3">Leave a rating</div>
+        </div>
+    </div>
+
+    <script>
+        let timeSpent = 0;
+        setInterval(() => {
+            timeSpent++;
+            document.getElementById('timeSpent').innerText = `Thời gian xem: ${timeSpent} phút`;
+        }, 60000); // Cập nhật mỗi phút
+
+        // Xử lý sự kiện cho đánh giá sao
+        const starElements = document.querySelectorAll('.star');
+        starElements.forEach(star => {
+            star.addEventListener('click', () => {
+                const stars = star.parentElement.children;
+                const index = Array.from(stars).indexOf(star);
+                const courseCard = star.closest('.course-card');
+                const ratingMessage = courseCard.querySelector('.rating-message');
+
+                // Reset sao đã đánh giá trước đó
+                for (let i = 0; i < stars.length; i++) {
+                    stars[i].classList.remove('filled'); // Xóa lớp "filled" để các sao đều rỗng
+                    stars[i].textContent = '★'; // Hiển thị sao rỗng
+                }
+
+                // Đánh dấu các sao đã được chọn
+                for (let i = 0; i <= index; i++) {
+                    stars[i].classList.add('filled'); // Thêm lớp "filled" cho sao được chọn
+                }
+
+                // Cập nhật thông báo đánh giá
+                ratingMessage.textContent = "Your rating";
+            });
+        });
+    </script>
+
+</body>
+</html>
